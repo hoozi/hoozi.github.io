@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>web editor</title>
+    <style>
+        body {
+            font:12px/1.5 '';
+        }
+        .clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}
+        .clearfix{*zoom:1;}
+        .editor {
+            border:1px solid #d4d4d4;
+            border-top-right-radius:4px;
+            border-top-left-radius:4px;
+            width:500px;
+            height:500px;
+            margin:50px auto;
+        }
+        .editor .editor__toolbar {
+            border-bottom: 1px solid #d4d4d4;
+            background-color: #fafafa;
+            background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+            background-repeat: repeat-x;
+            border-radius: 4px 4px 0 0;
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#fff2f2f2', GradientType=0);
+            *zoom: 1;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.08);
+            padding:5px;
+        }
+        .editor .editor__content {
+            min-height:370px;
+            padding:15px;
+        }
+        .editor .editor__content:focus {
+            outline: none;
+        }
+        .editor .editor__toolbar .eui-control {
+            margin:5px;
+        }
+        .eui-control {
+            display:block;
+            float:left;
+            -moz-user-select:none;
+        }
+        .eui-control--btn {
+            padding:2px;
+            color:#333;
+            text-decoration:none;
+        }
+        .eui-control--btn:hover {
+            background-color: #d5e1f2;
+            border: 1px solid #a3bde3;
+            padding:1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor">
+        <div class="editor__toolbar clearfix">
+            <a href="###" class="eui-control eui-control--btn" data-editor-command="bold" onselectstart="return false;"  unselectable="on">加粗</a>
+            <a href="###" class="eui-control eui-control--btn" data-editor-command="italic" onselectstart="return false;"  unselectable="on">斜体</a>
+            <a href="###" class="eui-control eui-control--btn" data-editor-command="underline" onselectstart="return false;"  unselectable="on">下划线</a>
+            <select name="" id="" class="eui-control eui-control--drop" data-editor-command="formatblock">
+                <option value="">字号</option>
+                <option value="<h1>">一级标题</option>
+                <option value="<h2>">二级标题</option>
+                <option value="<h3>">三级标题</option>
+                <option value="<h4>">四级标题</option>
+                <option value="<h5>">五级标题</option>>
+            </select>
+        </div>
+        <div class="editor__content" contenteditable="true">
+            <p>111</p>
+        </div>
+    </div>
+    <div class="test">
+        <button>获取html</button>
+    </div>
+    <textarea name="" id="conver" cols="30" rows="10"></textarea>
+    <script>
+        (function(doc){
+            var toolbar = doc.querySelector('.editor__toolbar');
+            var content = doc.querySelector('.editor__content');
+            var conver = doc.querySelector('#conver');
+            var btn = toolbar.querySelectorAll('.eui-control--btn');
+            var drop = toolbar.querySelectorAll('.eui-control--drop');
+            var i,j;
+            function getCommand(node) {
+                   return node.dataset ? node.dataset.editorCommand : node.getAttribute('data-editor-command');
+            }
+            function getRange() {
+                var range
+                try {
+                    range = document.selection.createRange();
+                } catch(e) {
+                    alert(1)
+                    range = document.createRange();
+                }
+                return range;
+            }
+            for(i=0;i<btn.length;i++) {
+                btn[i].addEventListener('click', function(e) {
+                    var command = getCommand(this),
+                        range = getRange();
+                        console.log(range,command)
+                    range.execCommand(command)
+                })
+            }
+            for(j=0;j<drop.length;j++) {
+                drop[j].addEventListener('change', function(e) {
+                    var selectedIndex = this.selectedIndex,
+                        option = this.options[selectedIndex],
+                        range = getRange(),
+                        command = getCommand(this);
+                        console.log(range,command,option.value)
+                        range.execCommand(command,false,option.value);
+                })
+            }
+            //conver.value = content.innerHTML;
+            //console.log(conver.value);
+        })(document)
+    </script>
+</body>
+</html>
